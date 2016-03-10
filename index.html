@@ -4,8 +4,198 @@
     <meta charset="UTF-8">
     <title>团队介绍</title>
 </head>
+<style>
+    #slider-wrapper {
+        position: relative;
+        width: 60%;
+    }
+
+    #slider {
+        height: 400px;
+        position: relative;
+        overflow: hidden;
+        padding: 0;
+        list-style: none;
+    }
+    #slider > li {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+    #slider img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .left {
+        left: -100%;
+        /*-webkit-transform: translateX(-100%);*/
+        /*transform: translateX(-100%);*/
+    }
+
+    .transition {
+        -webkit-transition: all .3s linear;
+        transition: all .3s linear;
+    }
+
+    .right {
+        left: 100%;
+        /*-webkit-transform: translateX(100%);*/
+        /*transform: translateX(100%);*/
+    }
+
+    .active {
+        left: 0;
+        /*-webkit-transform: translateX(0);*/
+        /*transform: translateX(0);*/
+    }
+
+    #controls {
+        position: absolute;
+        bottom: 8px;
+        width: 40px;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+
+    .control {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 8px;
+        background-color: #000;
+        opacity: .2;
+    }
+
+    .control.current, .control:hover {
+        opacity: .5;
+    }
+
+</style>
 <body>
-Test
-<img src="img/baidu_logo.png" alt="baidu"/>
+<section id="slider-wrapper">
+    <ul id="slider">
+        <li>
+            <img src="http://csscience.com/responsiveslidercss3/CouldDragonByBjzaba.png" alt="陈俊杉"/>
+        </li>
+        <li>
+            <img src="http://csscience.com/responsiveslidercss3/MountainFortByBjzaba.png" alt="张佳梁"/>
+        </li>
+        <li>
+            <img src="http://csscience.com/responsiveslidercss3/MountainOutpostByBjzaba.png" alt="白玉仕"/>
+        </li>
+    </ul>
+    <div id="controls">
+        <label name="0" class="control"></label>
+        <label name="1" class="control"></label>
+        <label name="2" class="control"></label>
+    </div>
+</section>
+<script>
+    function Slider(container, option) {
+        var slider = {};
+        var opt = {
+            loop: true,
+            direction: 'rtl',// rtl从右往左，ltr从左往右
+            interval: 4000,
+            onslide: null,
+            hasControl: true
+        };
+
+        for (var i in option) {
+            if (option.hasOwnProperty(i)) {
+                opt[i] = option[i];
+            }
+        }
+
+        var container = document.getElementById(container);
+        var slides = container.children;
+        var cur = 0;
+        var size = slider.size = slides.length;
+        var pre = opt.direction === 'ltr' ? 'right' : 'left';
+        var next = opt.direction === 'ltr' ? 'left' : 'right';
+        var active = 'active transition';
+        slides[cur].className = active;
+        slides[size - 1].className = pre;
+        for (i = cur + 1; i < size - 1; i++) {
+            slides[i].className = next;
+        }
+        setCurrentCtrl(cur);
+
+        var toPre = function () {
+            slides[cur].className = next + ' transition';
+            cur = slider.cur = (cur + size - 1) % size;
+            slides[cur].className = active;
+            slides[(cur + size - 1) % size].className = pre;
+            opt.hasControl && setCurrentCtrl(cur);
+            opt.onslide && opt.onslide();
+        };
+
+        var toNext = function () {
+            slides[cur].className = pre + ' transition';
+            cur = slider.cur = (cur + 1) % size;
+            slides[cur].className = active;
+            slides[(cur + 1) % size].className = next;
+            opt.hasControl && setCurrentCtrl(cur);
+            opt.onslide && opt.onslide();
+        };
+
+        if (opt.loop && size > 1) {
+            setInterval(function () {
+                toNext();
+            }, opt.interval);
+        }
+
+        // 从左往右滑
+        slider.slideLTR = function () {
+            opt.direction === 'ltr' ? toNext() : toPre();
+        };
+
+        // 从右往左滑
+        slider.slideRTL = function () {
+            opt.direction === 'ltr' ? toPre() : toNext();
+        };
+
+        // 滑到第几张
+        slider.slideTo = function (to) {
+            if (isNaN(to) || to < 0 || to > size || to == cur) {
+                return;
+            }
+            cur = slider.cur = to;
+            slides[cur].className = 'active';
+            slides[(cur + size - 1) % size].className = pre;
+            slides[(cur + 1) % size].className = next;
+            opt.hasControl && setCurrentCtrl(to);
+        };
+
+        function setCurrentCtrl(offset) {
+            var ctrls = document.getElementsByClassName('current');
+            for (i = 0; i < ctrls.length; i++) {
+                ctrls[i].className = 'control';
+            }
+            document.getElementsByClassName('control')[offset].className = 'control current';
+        }
+
+        if (opt.hasControl) {
+            var controls = document.getElementById('controls');
+            controls.addEventListener('click', function (e) {
+                e = e || window.event;
+                var target = e.target || e.srcElement;
+                if (target.nodeName.toLowerCase() != 'label') {
+                    return;
+                }
+
+                var offset = target.getAttribute('name');
+                slider.slideTo(offset);
+            }, false);
+        }
+
+        return slider;
+    }
+
+    var slider = new Slider('slider');
+</script>
 </body>
 </html>
