@@ -5,21 +5,23 @@
     <title>团队介绍</title>
 </head>
 <style>
+    body {
+        background: -moz-linear-gradient(top, #9B6EB6, #fff) no-repeat;
+        background: -webkit-linear-gradient(top, #9B6EB6, #fff) no-repeat;
+        background: linear-gradient(top, #9B6EB6, #fff) no-repeat;
+    }
     #slider-wrapper {
         position: relative;
-        width: 300px;
+        width: 360px;
         margin: 0 auto;
     }
     .nju-logo {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1;
-        height: 80px;
-        width: 80px;
+        display: block;
+        width: 60px;
+        margin: 10px auto;
     }
     #slider {
-        height: 450px;
+        height: 540px;
         position: relative;
         overflow: hidden;
         padding: 0;
@@ -83,8 +85,8 @@
 
 </style>
 <body>
+<object data="img/nju_logo.svg" type="image/svg+xml" class="nju-logo"></object>
 <section id="slider-wrapper">
-    <object data="img/nju_logo.svg" type="image/svg+xml" class="nju-logo"></object>
     <ul id="slider">
         <li>
             <img src="./img/1.jpg" alt="陈俊杉"/>
